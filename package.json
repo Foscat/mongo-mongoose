@@ -1,0 +1,20 @@
+{
+  "name": "mongo-mongoose",
+  "version": "1.0.0",
+  "description": "scrape da web mon",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "k-fizzle",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^5.4.2",
+    "morgan": "^1.9.1"
+  }
+}
