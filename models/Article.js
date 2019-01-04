@@ -11,6 +11,11 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  //  `summary` is required and is a type of text to allow it to be big
+  summary: {
+    type: String,
+    required: true
+  },
   // `link` is required and of type String
   link: {
     type: String,
