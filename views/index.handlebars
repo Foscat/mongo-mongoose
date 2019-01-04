@@ -1,8 +1,49 @@
 <html>
     <div id="wrapper">
-      <h1>Note Scraper</h1>
-      <h2><i>If you can do this...the homework should be no problem.</i></h2>
-      <div id="articles">articles</div>
-      <div id="notes">notes</div>
+
+      <h1>
+        Note Scraper
+      </h1>
+
+      <h2>
+        <i>If you can do this...the homework should be no problem.</i>
+      </h2>
+
+      <div id="note-box">
+
+        <textarea id="note"></textarea>
+
+        <div id="buttons">
+
+        <div id="action-button">
+          <button id="make-new">Submit</button>
+        </div>
+
+        <button id="clear-all">Delete All Notes</button>
+
+      </div>
+
+    <form action="/submit" method="post">
+      <h1>Hi User!</h1>
+      <h2>Enter a Note!</h2>
+      <input type="text" name="title" placeholder="Title">
+      <textarea type="text" name="body" placeholder="Write Note Here"></textarea>
+
+      <input type="submit">
+      <a href="/notes">See your notes!</a>
+      <a href="/user">See your profile!</a>
+      <a href="/populateduser">See your profile, populated with notes!</a>
+    </form>
+
+      </div>
+
+      <div id="articles">
+        articles
+      </div>
+
+      <div id="notes">
+        notes
+      </div>
+
     </div>
 </html>

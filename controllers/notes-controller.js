@@ -9,11 +9,13 @@ router.get("/", function(req, res) {
 });
 
 router.get("/notes", function(req, res) {
+  console.log(req, res);
+  res.render("index");
   // express callback response by calling burger.selectAllBurger
-  note.all(function(noteData) {
-    // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
-    res.render("index", { body: noteData });
-  });
+  // note.all(function(noteData) {
+  //   // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
+  //   res.render("index", { body: noteData });
+  // });
 });
 
 // post route -> back to index
