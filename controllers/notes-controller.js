@@ -1,7 +1,7 @@
 var express = require("express");
 
 var router = express.Router();
-var note = require("../models/Note.js");
+var models = require("../models");
 
 // get route -> index
 router.get("/", function(req, res) {
@@ -9,10 +9,10 @@ router.get("/", function(req, res) {
 });
 
 router.get("/notes", function(req, res) {
-  console.log(req, res);
+  // console.log(res);
   res.render("index");
   // express callback response by calling burger.selectAllBurger
-  // note.all(function(noteData) {
+  // models.Note.all(function(noteData) {
   //   // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
   //   res.render("index", { body: noteData });
   // });
@@ -20,18 +20,24 @@ router.get("/notes", function(req, res) {
 
 // post route -> back to index
 router.post("/notes/create", function(req, res) {
+  // console.log(res);
     // takes the request object using it as input for burger.addBurger
-    note.create(req.body.body, function(result) {
+    models.Note.create({
+      title: req.body.title,
+      body: req.body.note
+    }, function(result) {
       // wrapper for orm.js that using MySQL insert callback will return a log to console,
       // render back to index with handle
-      console.log(result);
-      res.redirect("/");
+      console.log("result: " + result);
+      // res.render("index", { body: noteData });
+      
     });
+    res.redirect("/");
   });
 
   // put route -> back to index
 router.put("/notes/:id", function(req, res) {
-    burger.update(req.params.id, function(result) {
+    models.Note.update(req.params.id, function(result) {
       // wrapper for orm.js that using MySQL update callback will return a log to console,
       // render back to index with handle
       console.log(result);

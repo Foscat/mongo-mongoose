@@ -9,41 +9,50 @@
         <i>If you can do this...the homework should be no problem.</i>
       </h2>
 
+      {{!-- Box that holds all note making info --}}
       <div id="note-box">
 
-        <textarea id="note"></textarea>
+        <form action="/submit" method="post">
 
-        <div id="buttons">
+          <h1>Hi User!</h1>
+          <h2>Enter a Note!</h2>
 
-        <div id="action-button">
-          <button id="make-new">Submit</button>
+          {{!-- User enters note title here --}}
+          <input id="note-title-input" type="text" name="title" placeholder="Title">
+
+          {{!-- User enters note body here --}}
+          <textarea id="note-body-input" type="text" name="body" placeholder="Write Note Here"></textarea>
+
+          {{!-- Submit button for note --}}
+          {{!-- <a id="create-note" href="/notes/create"><button type="button">Submit Note</button></a> --}}
+          <input id="create-note-button" type="submit">
+
+          {{!-- Links to json info of users and notes --}}
+          <a href="/notes">See your notes!</a>
+          <a href="/user">See your profile!</a>
+          <a href="/populateduser">See your profile, populated with notes!</a>
+
+        </form>
+
+        <div id="results">
+          {{note}}
         </div>
 
-        <button id="clear-all">Delete All Notes</button>
-
-      </div>
-
-    <form action="/submit" method="post">
-      <h1>Hi User!</h1>
-      <h2>Enter a Note!</h2>
-      <input type="text" name="title" placeholder="Title">
-      <textarea type="text" name="body" placeholder="Write Note Here"></textarea>
-
-      <input type="submit">
-      <a href="/notes">See your notes!</a>
-      <a href="/user">See your profile!</a>
-      <a href="/populateduser">See your profile, populated with notes!</a>
-    </form>
-
-      </div>
-
-      <div id="articles">
-        articles
-      </div>
-
-      <div id="notes">
-        notes
       </div>
 
     </div>
+
+      <div class="row around">
+
+        <div class="col-md-4 border border-dark" id="articles">
+          <h2>All article info goes here</h2>
+        </div>
+
+        <div class="col-md-4 border border-dark" id="notes">
+          <h1>All notes here</h1>
+        </div>
+
+      </div>
+
+  </div>
 </html>
