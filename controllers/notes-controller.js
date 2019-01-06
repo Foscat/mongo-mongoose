@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var models = require("../models");
+var mongojs = require("mongojs");
 
 // get route -> index
 router.get("/", function(req, res) {
@@ -57,27 +58,52 @@ router.post("/notes/create", function(req, res) {
   });
 
   // put route -> back to index
-router.put("/notes/:id", function(req, res) {
-    models.Note.update(req.params.id, function(result) {
-      // wrapper for orm.js that using MySQL update callback will return a log to console,
-      // render back to index with handle
-      console.log(result);
-      // Send back response and let page reload from .then in Ajax
-      res.sendStatus(200);
-    });
-  });
+  // router.put("/notes/find/:id", function(req, res) {
+  //   console.log(_id)
+  //   models.Note.findOne(_id).then(function(response){
+  //     console.log(result);
+  //   });
+  // });
 
-  router.delete("/notes/:id", function(req, res) {
+  router.delete("/notes/delete/:id", function(req, res) {
 
     console.log("res " + res);
     console.log("req " +req.id);
-    models.Note.delete(req._id, function(result) {
-      // wrapper for orm.js that using MySQL update callback will return a log to console,
-      // render back to index with handle
-      console.log(result);
-      // Send back response and let page reload from .then in Ajax
-      res.sendStatus(200);
-    });
+    models.Note.deleteOne(
+      {
+        _id: mongojs.ObjectId(req.params.id)
+      },
+      function(error, removed) {
+
+        if(error) {
+          console.log(error);
+          res.send(error);
+        }
+        else {
+          console.log(removed);
+          res.send(removed);
+        }
+      }
+    );
+    
+  });
+
+  // Clear the DB
+  router.get("/clearall", function(req, res) {
+  // Remove every note from the notes collection
+  models.Note.deleteMany({}, function(error, response) {
+    // Log any errors to the console
+    if (error) {
+      console.log(error);
+      res.send(error);
+    }
+    else {
+      // Otherwise, send the mongojs response to the browser
+      // This will fire off the success function of the ajax request
+      console.log(response);
+      res.send(response);
+    }
+  });
   });
 
   module.exports = router;

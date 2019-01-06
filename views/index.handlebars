@@ -2,11 +2,11 @@
     <div id="wrapper">
 
       <h1>
-        Note Scraper
+        Article scraper with note posts
       </h1>
 
       <h2>
-        <i>If you can do this...the homework should be no problem.</i>
+        <i>Dont tell me how to live my life.</i>
       </h2>
 
       {{!-- Box that holds all note making info --}}
@@ -50,9 +50,13 @@
           <div id="readNotes">
             <h2>read notes</h2>
             {{#each NoteSchema}}
+            <h3>{{title}}</h3>
+            <p>{{body}}</p>
               {{#if read}}
+              {{!-- <button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{read}}">Been read</button> --}}
                 {{> notes/note-block beenRead=true}}
               {{/if}}
+              <button class="rounded delete-note" data-id="{{_id}}">Delete Note</button>
             {{/each}}
           </div>
           
@@ -64,20 +68,18 @@
           <div id="unreadNotes">
             <h2>unread notes</h2>
             {{#each NoteSchema}}
+            
               {{#unless read}}
+              <h3>{{title}}</h3>
+              <p>{{body}}</p>
+              {{!-- <button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{read}}">Aint read</button> --}}
+              <button class="rounded delete-note" data-id="{{_id}}">Delete Note</button>
                 {{> notes/note-block beenRead=false}}
               {{/unless}}
+              
             {{/each}}
           </div>
 
-          {{!-- <div id="readNotes">
-            <h2>read notes</h2>
-            {{#each notes}}
-              {{#if read}}
-                {{> notes/note-block beenRead=true}}
-              {{/if}}
-            {{/each}}
-          </div> --}}
         </div>
 
       </div>

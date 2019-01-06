@@ -1,17 +1,15 @@
-<li>
-	<h2 class="marker">{{title}}</h2>
+{{!-- <li> --}}
 
 	<img class="note-icon" src="images/notes-icon.jpg" height="150px" width="150px">
 
-    <p class="note-post-body">{{body}}</p>
 
-	<button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{beenRead}}">
-		{{#if beenRead}}Put on shelf
+	<button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{read}}">
+		{{#if read}}Put on shelf
 
 		{{else}}READ THAT MOFO!!!
 
 		{{/if}}
 	</button>
 
-	<button class="rounded delete-note" data-id="{{this._id}}">Delete Note</button>
-</li>
+	
+{{!-- </li> --}}

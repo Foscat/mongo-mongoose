@@ -32,7 +32,7 @@
 // });
 
 $(function() {
-    $("change-read").on("click", function(event){
+    $(".change-read").on("click", function(event){
 
       var id = $(this).data("id");
       var NewRead = $(this).data("id");
@@ -44,14 +44,14 @@ $(function() {
       console.log(newReadState);
 
       $.ajax({
-        url: `/notes/${_id}`,
+        url: "/notes/" + id,
         method: "PUT",
         data: newReadState 
       })
         .then(
           function() {
-            console.log("Changed Note to ", NewRead);
-            // location.reload();
+            console.log("Changed Note to ", newReadState);
+            location.reload();
           }
         );
     });
@@ -65,7 +65,8 @@ $(".delete-note").on("click", function(event) {
 
   console.log(this);
   // Send the DELETE request.
-  $.ajax(`/notes/${id}`, {
+  $.ajax({
+    url: `/notes/delete/` + id,
     type: "DELETE"
   }).then(
     function() {
