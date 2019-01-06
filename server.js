@@ -42,7 +42,8 @@ var collections = ["scrapedData"];
 //  Tester to make sure note make is working
 modals.Note.create({ 
   title: "Kyle Foster",
-  body: "This is my server create note" 
+  body: "This is my server create note", 
+  read: false
 })
   .then(function(dbNote) {
     console.log(dbNote);
@@ -59,12 +60,13 @@ modals.Note.create({
 app.get("/", function(req, res) {
 
   modals.Note.all(function(data) {
-    console.log(data);
+    console.log("Data: " + data);
     var hbsObject = {
       notes: data
     };
+    console.log("Hbs1= " + hbsObject);
   });
-  console.log(hbsObject);
+  console.log("Hbs2= " + hbsObject);
   res.render("index", hbsObject);
 });
 

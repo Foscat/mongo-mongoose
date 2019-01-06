@@ -51,4 +51,6 @@ textarea {
 #notes {
   float: right;
   width: 30%;
+  overflow: auto;
+  height: 700px;
 }
