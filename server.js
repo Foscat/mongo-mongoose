@@ -64,9 +64,7 @@ app.get("/", function(req, res) {
     var hbsObject = {
       notes: data
     };
-    console.log("Hbs1= " + hbsObject);
   });
-  console.log("Hbs2= " + hbsObject);
   res.render("index", hbsObject);
 });
 

@@ -36,6 +36,7 @@ $(function() {
 
       var id = $(this).data("id");
       var NewRead = $(this).data("id");
+      console.log(NewRead);
 
       var newReadState = {
         read: !NewRead
@@ -50,7 +51,7 @@ $(function() {
         .then(
           function() {
             console.log("Changed Note to ", NewRead);
-            location.reload();
+            // location.reload();
           }
         );
     });
@@ -62,9 +63,9 @@ $(".delete-note").on("click", function(event) {
 
   var id = $(this).data("id");
 
-  console.log("click test 2");
+  console.log(this);
   // Send the DELETE request.
-  $.ajax("/notes/" + id, {
+  $.ajax(`/notes/${id}`, {
     type: "DELETE"
   }).then(
     function() {

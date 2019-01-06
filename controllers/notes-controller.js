@@ -7,6 +7,18 @@ router.get("/", function(req, res) {
   res.redirect("/notes");
 });
 
+router.get("/note/json", function(req, res) {
+  models.Note.find({}).then(function(data) {
+    console.log(data);
+      var hbsObj = {
+        NoteSchema: data
+      };
+      console.log(hbsObj);
+      // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
+      res.json(hbsObj);
+    });
+});
+
 router.get("/notes", function(req, res) {
   // console.log(res);
   // res.render("index");
@@ -14,7 +26,7 @@ router.get("/notes", function(req, res) {
   models.Note.find({}).then(function(data) {
   console.log(data);
     var hbsObj = {
-      notes: data
+      NoteSchema: data
     };
     console.log(hbsObj);
     // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
@@ -33,7 +45,12 @@ router.post("/notes/create", function(req, res) {
         // wrapper for orm.js that using MySQL insert callback will return a log to console,
         // render back to index with handle
         console.log("result: " + result);
-        res.render("index", { body: result });
+
+        hbsObj = {
+          NoteSchema: result
+        };
+
+        res.json(hbsObj.NoteSchema);
         
       });
     // res.redirect("/");
@@ -50,21 +67,17 @@ router.put("/notes/:id", function(req, res) {
     });
   });
 
-  router.delete("/notes", function(req, res) {
+  router.delete("/notes/:id", function(req, res) {
 
-    console.log(req);
-  //   models.Note.delete(req._id, function(result) {
-  //     if(result.affectedRows == 0) {
-  //       res.status(404).end();
-  //     } else {
-  //       res.status(200).end();
-  //     }
-  //     // wrapper for orm.js that using MySQL update callback will return a log to console,
-  //     // render back to index with handle
-  //     console.log(result);
-  //     // Send back response and let page reload from .then in Ajax
-  //     res.sendStatus(200);
-  //   });
+    console.log("res " + res);
+    console.log("req " +req.id);
+    models.Note.delete(req._id, function(result) {
+      // wrapper for orm.js that using MySQL update callback will return a log to console,
+      // render back to index with handle
+      console.log(result);
+      // Send back response and let page reload from .then in Ajax
+      res.sendStatus(200);
+    });
   });
 
   module.exports = router;

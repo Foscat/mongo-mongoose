@@ -28,7 +28,7 @@
           <input id="create-note-button" type="submit">
 
           {{!-- Links to json info of users and notes --}}
-          <a href="/notes">See your notes!</a>
+          <a href="/note/json">See your notes!</a>
           <a href="/user">See your profile!</a>
           <a href="/populateduser">See your profile, populated with notes!</a>
 
@@ -49,7 +49,7 @@
 
           <div id="readNotes">
             <h2>read notes</h2>
-            {{#each notes}}
+            {{#each NoteSchema}}
               {{#if read}}
                 {{> notes/note-block beenRead=true}}
               {{/if}}
@@ -63,7 +63,7 @@
 
           <div id="unreadNotes">
             <h2>unread notes</h2>
-            {{#each notes}}
+            {{#each NoteSchema}}
               {{#unless read}}
                 {{> notes/note-block beenRead=false}}
               {{/unless}}
