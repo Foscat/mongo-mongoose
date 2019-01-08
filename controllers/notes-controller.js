@@ -8,6 +8,7 @@ router.get("/", function(req, res) {
   res.redirect("/notes");
 });
 
+// For json format of all notes
 router.get("/note/json", function(req, res) {
   models.Note.find({}).then(function(data) {
     console.log(data);
@@ -20,10 +21,9 @@ router.get("/note/json", function(req, res) {
     });
 });
 
+// to populate main page with notes
 router.get("/notes", function(req, res) {
   // console.log(res);
-  // res.render("index");
-  // express callback response by calling burger.selectAllBurger
   models.Note.find({}).then(function(data) {
   console.log(data);
     var hbsObj = {
@@ -35,7 +35,7 @@ router.get("/notes", function(req, res) {
   });
 });
 
-// post route -> back to index
+// to create a new note
 router.post("/notes/create", function(req, res) {
     // takes the request object using it as input for burger.addBurger
     models.Note.create({
@@ -54,17 +54,10 @@ router.post("/notes/create", function(req, res) {
         res.json(hbsObj.NoteSchema);
         
       });
-    // res.redirect("/");
+    res.redirect("/");
   });
 
-  // put route -> back to index
-  // router.put("/notes/find/:id", function(req, res) {
-  //   console.log(_id)
-  //   models.Note.findOne(_id).then(function(response){
-  //     console.log(result);
-  //   });
-  // });
-
+  // to delete a note
   router.delete("/notes/delete/:id", function(req, res) {
 
     console.log("res " + res);

@@ -5,27 +5,21 @@
         Article scraper with note posts
       </h1>
 
-      <h2>
-        <i>Dont tell me how to live my life.</i>
-      </h2>
-
       {{!-- Box that holds all note making info --}}
-      <div id="note-box">
+      <div class="container center" id="noteMake">
 
         <form action="/notes/create" method="post">
 
-          <h1>Hi User!</h1>
           <h2>Enter a Note!</h2>
 
           {{!-- User enters note title here --}}
-          <input id="note-title-input" type="text" name="title" placeholder="Title">
+          <input id="nM-title_input" type="text" name="title" placeholder="Title">
 
           {{!-- User enters note body here --}}
-          <textarea id="note-body-input" type="text" name="body" placeholder="Write Note Here"></textarea>
+          <textarea class="row m-1" id="nM-body_input" type="text" name="body" placeholder="Write Note Here"></textarea>
 
           {{!-- Submit button for note --}}
-          {{!-- <a id="create-note" href="/notes/create"><button type="button">Submit Note</button></a> --}}
-          <input id="create-note-button" type="submit">
+          <input  id="noteMake-create_button" type="submit">
 
           {{!-- Links to json info of users and notes --}}
           <a href="/note/json">See your notes!</a>
@@ -44,41 +38,32 @@
 
       <div class="row around">
 
-        <div class="col-md-4 border border-dark" id="articles">
-          <h2>All article info goes here</h2>
+        <div class="col-md-4 border border-dark" id="article">
 
-          <div id="readNotes">
-            <h2>read notes</h2>
-            {{#each NoteSchema}}
-            <h3>{{title}}</h3>
-            <p>{{body}}</p>
-              {{#if read}}
-              {{!-- <button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{read}}">Been read</button> --}}
-                {{> notes/note-block beenRead=true}}
-              {{/if}}
-              <button class="rounded delete-note" data-id="{{_id}}">Delete Note</button>
-            {{/each}}
+          <h2>All article info goes here</h2>
+          <button id="scraper" class="rounded">Scrape away!</button>
+
+          <div id="art-info">
+
           </div>
           
         </div>
 
-        <div class="col-md-4 border border-dark" id="notes">
+        <div class="col-md-4 border border-dark" id="notePool">
           <h1>All notes here</h1>
 
-          <div id="unreadNotes">
-            <h2>unread notes</h2>
             {{#each NoteSchema}}
-            
-              {{#unless read}}
-              <h3>{{title}}</h3>
-              <p>{{body}}</p>
-              {{!-- <button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{read}}">Aint read</button> --}}
-              <button class="rounded delete-note" data-id="{{_id}}">Delete Note</button>
-                {{> notes/note-block beenRead=false}}
-              {{/unless}}
-              
+
+              <div class="single-note border border-dark mt-3">
+
+                <img class="note-icon" src="images/notes-icon.jpg" height="100px" width="100px">
+                <h3 class="noteTitle border-bottom border-dark">{{title}}</h3>
+                <p class="noteBody">{{body}}</p>
+                <button class="rounded delete-note" data-id="{{_id}}">Delete Note</button>
+
+              </div>
+
             {{/each}}
-          </div>
 
         </div>
 

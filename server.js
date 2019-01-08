@@ -35,28 +35,7 @@ var routes = require("./controllers/notes-controller");
 
 app.use(routes);
 
-// Database configuration
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
-
-//  Tester to make sure note make is working
-modals.Note.create({ 
-  title: "Kyle Foster",
-  body: "This is my server create note", 
-  read: false
-})
-  .then(function(dbNote) {
-    console.log(dbNote);
-  })
-  .catch(function(err) {
-    console.log(err.message);
-  });
-
-
-
-// Routes
-
-// Main route 
+// Main route template route
 app.get("/", function(req, res) {
 
   modals.Note.all(function(data) {
