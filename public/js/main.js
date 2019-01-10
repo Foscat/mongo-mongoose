@@ -5,14 +5,13 @@ $("#scraper").on("click", function(event){
   $.ajax({
     url: "/scrape",
     type: "GET",
-    data: {
-      title: title,
-      link: link
-    }
+    data: event
   }).then(
-    function(){
+    function(response){
       console.log(data);
-      $("#art-info").append(data);
+      console.log(response);
+      // $("#art-info").append(data);
+      location.reload();
     }
   );
 });

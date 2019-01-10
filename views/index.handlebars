@@ -42,8 +42,15 @@
 
           <h2>All article info goes here</h2>
           <button id="scraper" class="rounded">Scrape away!</button>
+          <a href="/scrape"><button type="button">Anchor Scrape</button></a>
 
-          <div id="art-info">
+          <div id="art-info" class="m-1 border border-info">
+
+           <div class="m-1 border border-info"> 
+            {{#each ArticleSchema}}
+              {{> articles/article-block}}
+            {{/each}}
+          </div>
 
           </div>
           

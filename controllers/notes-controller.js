@@ -57,7 +57,7 @@ router.post("/notes/create", function(req, res) {
     res.redirect("/");
   });
 
-  // to delete a note
+  // To delete a note
   router.delete("/notes/delete/:id", function(req, res) {
 
     console.log("res " + res);
@@ -82,7 +82,7 @@ router.post("/notes/create", function(req, res) {
   });
 
   // Clear the DB
-  router.get("/clearall", function(req, res) {
+  router.get("/clearNotes", function(req, res) {
   // Remove every note from the notes collection
   models.Note.deleteMany({}, function(error, response) {
     // Log any errors to the console
@@ -98,5 +98,23 @@ router.post("/notes/create", function(req, res) {
     }
   });
   });
+
+  // Clear the DB
+  router.get("/clearNotes", function(req, res) {
+    // Remove every note from the notes collection
+    models.Note.deleteMany({}, function(error, response) {
+      // Log any errors to the console
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the mongojs response to the browser
+        // This will fire off the success function of the ajax request
+        console.log(response);
+        res.send(response);
+      }
+    });
+    });
 
   module.exports = router;

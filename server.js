@@ -32,19 +32,27 @@ app.set("view engine", "handlebars");
 
 // Import routes and give the server access to them.
 var routes = require("./controllers/notes-controller");
-
+var artRoutes = require("./controllers/articles-controller");
 app.use(routes);
+app.use(artRoutes);
 
 // Main route template route
 app.get("/", function(req, res) {
 
-  modals.Note.all(function(data) {
-    console.log("Data: " + data);
-    var hbsObject = {
-      notes: data
+  modals.Article.all(function(data) {
+    console.log(data);
+    var artHbsData = {
+      articles: data
     };
   });
-  res.render("index", hbsObject);
+
+  // modals.Note.all(function(data) {
+  //   console.log("Data: " + data);
+  //   var hbsObject = {
+  //     notes: data
+  //   };
+  // });
+  res.render("index", artHbsData);
 });
 
 // Start our server so that it can begin listening to client requests.
