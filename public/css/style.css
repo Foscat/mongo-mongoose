@@ -23,6 +23,10 @@ body {
 .around {
   justify-content: space-around;
 }
+/* To make items line up */
+.line {
+  display: flex;
+}
 /* Quick way to make things really bold */
 .boldest{
   font-weight: bolder;
@@ -37,6 +41,10 @@ body {
 .noteBody {
   background-color: rgb(160, 160, 170);
   color: rgb(0, 0, 0);
+}
+.deleteNote {
+  height: 25px;
+  background-color: darkgray;
 }
 
 /*  ///// Id modifiers ///// */

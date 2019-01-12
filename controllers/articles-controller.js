@@ -21,18 +21,39 @@ db.on("error", function(error) {
 });
 
 // Retrieve data from the db
-router.get("/articles", function(req, res) {
+router.get("/articles/saved", function(req, res) {
   // Find all results from the scrapedData collection in the db
-  db.Articles.find({}, function(error, found) {
-    // Throw any errors to the console
-    if (error) {
-      console.log(error);
-    }
-    // If there are no errors, send the data to the browser as json
-    else {
-      res.json(found);
-    }
+  db.Articles.find({}).then(function(dbArticle){
+    res.json(dbArticle);
+  }).catch(function(err){
+    res.json(err);
   });
+});
+
+router.post("/article/add", function(req, res) {
+  
+  var artObj = req.body;
+
+  db.Articles.findOne(
+    {link: artObj.url}
+    ).then(function(response){
+
+      if (response === null) {
+
+        db.Articles.create(artObj)
+          .then(function(response){
+
+            console.log(" ");
+            console.log(response);
+
+          }).catch(function(err){
+            res.json(err);
+          });
+      }
+      res.send("Saved");
+    }).catch(function(err){
+      res.json(err);
+    });
 });
 
 // Scrape data from one site and place it into the mongodb db
@@ -40,7 +61,12 @@ router.get("/scrape", function(req, res) {
   // Make a request via axios for the news section of `ycombinator`
   axios.get("https://news.ycombinator.com/").then(function(response) {
     // Load the html body from axios into cheerio
+
+    // An empty array to pool data
     var $ = cheerio.load(response.data);
+    var handleObj = {
+      data: []
+    };
     // For each element with a "title" class
     $(".title").each(function(i, element) {
       // Save the text and href of each link enclosed in the current element
@@ -90,6 +116,19 @@ router.get("/scrape", function(req, res) {
   });
 });
 
+  // Delete single article
+  app.post("/article/delete", (req, res) => {
+    // console.log(req.body)
+    sessObj = req.body;
+
+    db.Articles.findByIdAndRemove(sessObj["_id"]). // Look for the Article and Remove from DB
+    then(function(response) {
+      if (response) {
+        res.send("Sucessfully Deleted");
+      }
+    });
+  }); // End deleteArticle Route
+
  // Clear the DB
  router.get("/clearArticles", function(req, res) {
   // Remove every note from the notes collection
@@ -103,7 +142,7 @@ router.get("/scrape", function(req, res) {
       // Otherwise, send the mongojs response to the browser
       // This will fire off the success function of the ajax request
       console.log(response);
-      res.redirect("/");
+      res.send(response);
     }
   });
 });

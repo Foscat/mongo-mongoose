@@ -1,15 +1,9 @@
-{{!-- <li> --}}
-
-	<img class="note-icon" src="images/notes-icon.jpg" height="150px" width="150px">
-
-
-	<button class="change-read boldest rounded" data-id="{{_id}}" data-newread="{{read}}">
-		{{#if read}}Put on shelf
-
-		{{else}}READ THAT MOFO!!!
-
-		{{/if}}
-	</button>
-
-	
-{{!-- </li> --}}
+<div class="m-1 border border-danger line">
+	<img class="note-icon" src="images/notes-icon.jpg" height="100px" width="100px">
+	<div class="col">
+		<h4 class="noteTitle">{{title}}</h4>
+    	<p class="noteBody">{{body}}</p>
+	</div>
+    
+	<button class="rounded deleteNote" data-id="{{_id}}">Delete Note</button>
+</div>

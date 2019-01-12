@@ -62,12 +62,7 @@
             {{#each NoteSchema}}
 
               <div class="single-note border border-dark mt-3">
-
-                <img class="note-icon" src="images/notes-icon.jpg" height="100px" width="100px">
-                <h3 class="noteTitle border-bottom border-dark">{{title}}</h3>
-                <p class="noteBody">{{body}}</p>
-                <button class="rounded delete-note" data-id="{{_id}}">Delete Note</button>
-
+                {{> notes/note-block}}
               </div>
 
             {{/each}}
