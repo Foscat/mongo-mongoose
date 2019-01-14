@@ -49,12 +49,13 @@
 
 <!-- ///////////////////////////// Main content \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
 <div class="container">
-  <div id="" class="row">
+  <div class="row around">
 
     {{#each data}}
-        <div class="col s12 m12 l6 xl4" id="{{this.link}}" style="display:inline-block;">
+    
+        <div class="col" id="{{this.link}}" style="display:inline-block;">
 
-            <div class="card" style="min-height:330.662px;">
+            <div class="card" style="min-height:2rem; min-width:15rem;">
 
                 <div class="card-image" style="position:relative;">
                     <div style="background-color: rgba(0,0,0,0.25); height: 100%; width: 100%; position:absolute; z-index:100;"></div>
@@ -102,7 +103,7 @@
 <!-- ///////////////////////////// Modals \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
 
 <!-- Model that handles notes -->
-<div id="modalMessage" class="modal waves-effect waves-green center" style="border:3px black solid height: 100%;">
+{{!-- <div id="modalMessage" class="modal waves-effect waves-green center" style="border:3px black solid; height: 100%;">
 
   <div class="modal-content pink">
 
@@ -112,7 +113,7 @@
 
   </div>
  
-</div>
+</div> --}}
 {{!-- End of note model --}}
 
 
@@ -132,7 +133,7 @@
                     <div class="card horizontal">
 
                         <div class="card-image">
-                            <img src="https://lorempixel.com/100/190/nature/6">
+                            <img src="images/conspiracykids_header.jpg">
                         </div>
 
                         <div class="card-stacked center">
@@ -163,7 +164,7 @@
     </div>
 
     <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat hover addComment" style="color:white;">Add</a>
+        <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat hover addComment" style="color:white;">Add</a>
     </div>
 </div>
 {{!-- End of article model --}}

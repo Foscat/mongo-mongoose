@@ -1,0 +1,96 @@
+/* Custom css is seaperated by page elements first, then class modifiers and ends with specific ids */
+
+/* ///// Element modifiers ///// */
+
+body {
+    background-color: lightgray;
+}
+
+/* ///// Class modifiers //// */
+
+/* **Legend** */
+  /* General modifiers are one word all lowercase in name with no caps i.e: ".center" */
+  /* Object style modifiers have underscores seperating object and what property is being modified i.e: ".note_body" */
+    /* Object style modifiers are mostly used for objects generated in js */
+
+/* For aligning content to the horozontal center */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Gives even spacing between elements */
+.around {
+  justify-content: space-around;
+}
+/* To make items line up */
+.line {
+  display: flex;
+}
+/* Quick way to make things really bold */
+.boldest{
+  font-weight: bolder;
+}
+
+
+/* Styling for user generated notes  */
+.noteTitle {
+  color: darkgreen;
+  font-family: fantasy
+}
+.noteBody {
+  background-color: rgb(160, 160, 170);
+  color: rgb(0, 0, 0);
+}
+.deleteNote {
+  height: 25px;
+  background-color: darkgray;
+}
+
+/*  ///// Id modifiers ///// */
+
+/* This section sets container sizes and framework of each  */
+/*  If a Id is inside of another Id it is indented under parent id*/
+
+/* Overall container for page content */
+#wrapper {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 2%;
+}
+
+/* Container that seperates scraped article information from reast of page  */
+#article {
+  display: inline-block;
+  overflow: auto;
+  width: 50%;
+  height: 700px;
+}
+  /* Container that holds all scraped article info */
+  #art-info {
+    border: 2px, crimson, solid;
+  }
+
+/* Container that holds the note maker form */
+#noteMake {
+  display: flex;
+  background-color: rgb(151, 212, 151);
+}
+  #nM-title_input {
+    height: 36px;
+    font-size: 24px;
+  }
+  #nM-body_input {
+    height: 200px;
+    width: 75%;
+    font-size: 18px;
+  }
+
+/* Container that holds all notes tied to scraped article */
+#notePool {
+  float: right;
+  width: 50%;
+  overflow: auto;
+  height: 700px;
+}

@@ -6,16 +6,30 @@ $(document).ready(function() {
   
     /////////////////////////////////////////////// /* Event Listeners */ ////////////////////////////////////////////////////////
     $('.searchArticle').on("click", function() { // Scrap Articles Request
-      // console.log("searchArticle Button clicked");
-      $.ajax({
-        url: "/articles/scrape", 
-        type: "GET"
-      })
-      .then(function(){ 
-        // res.render("index", hbsObj);
-        location.replace("/articles/scrape");
-        });
+      $.getJSON("/articles", function(data) {
+        $("#articles").append(
+          "<li id=" + article._id + "data-url=" + 
+            data.link + "data-category=" + 
+            data.category + "class=collection-item avatar hover modal-trigger href=#articleModal><img src=" + 
+            data.image + "class=circle><span class=title>" + 
+            data.title + "</span><p>" + 
+            data.summary + "</p><a class=secondary-content deleteArticle><i class=material-icons hoverRed>delete_forever</i></a></li>"
+          );
+      }).then(function(){ 
+          // res.render("index", hbsObj);
+          window.location.replace("/articles");
+          });
     }); // End searchArticle btn Click
+
+    // //// console.log("searchArticle Button clicked");
+    // $.ajax({
+    //   url: "/articles/scrape", 
+    //   type: "GET"
+    // })
+    // .then(function(){ 
+    //   // res.render("index", hbsObj);
+    //   location.replace("/articles/scrape");
+    //   });
 
   
     $('.addArticle').on("click", function(element) { // Save an Article Request
