@@ -1,128 +1,83 @@
-var express = require("express");
-var router = express.Router();
-var models = require("../models");
-var mongojs = require("mongojs"); 
+var mongoose = require('mongoose'); // MongoDB ORM
+var db = require("../models"); // Get all models
 
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) {
-  console.log("Database Error:", error);
+
+var mongooseConnection = mongoose.connection;
+
+mongooseConnection.on("error", console.error.bind(console, "Connection error:"));
+mongooseConnection.once("open", function() {
+  console.log("Notes sucessfully connected to Mongo DB"); // Once connection is successful it tells you in in the console log
 });
 
-// get route -> index
-router.get("/", function(req, res) {
-  res.redirect("/notes");
-});
 
-// For json format of all notes
-router.get("/note/json", function(req, res) {
-  models.Note.find({}).then(function(data) {
-    console.log(data);
-      var hbsObj = {
-        NoteSchema: data
-      };
-      console.log(hbsObj);
-      // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
-      res.json(hbsObj);
-    });
-});
+module.exports = function(app) {
 
-// to populate main page with notes
-router.get("/notes", function(req, res) {
-  // console.log(res);
-  models.Note.find({}).then(function(data) {
-  console.log(data);
-    var hbsObj = {
-      NoteSchema: data
-    };
-    console.log(hbsObj);
-    // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
-    res.render("index", hbsObj);
-  });
-});
+  // Start note delete route
+  app.post("/notes/delete", function(req, res) {
 
-// to create a new note
-router.post("/notes/create", function(req, res) {
-    // takes the request object using it as input for burger.addBurger
-    models.Note.create({
-      title: req.body.title,
-      body: req.body.body
-    })
-      .then(function(result) {
-        // wrapper for orm.js that using MySQL insert callback will return a log to console,
-        // render back to index with handle
-        console.log("result: " + result);
+    var note = req.body;
 
-        hbsObj = {
-          NoteSchema: result
-        };
-
-        res.json(hbsObj.NoteSchema);
-        
+    db.Notes.findByIdAndRemove(note._id)
+      .then(function(response) {
+        if(response) {
+          res.send("Note Deleted");
+        }
       });
-    res.redirect("/");
-  }); 
+  }); // End of note delete route
 
-  // POST route for saving a new Book to the db and associating it with a Library
-app.post("/submit", function(req, res) {
-  // Create a new Book in the database
-  db.Note.create(req.body)
-    .then(function(dbBook) {
-      // If a Book was created successfully, find one library (there's only one) and push the new Book's _id to the Library's `books` array
-      // { new: true } tells the query that we want it to return the updated Library -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.Library.findOneAndUpdate({}, { $push: { books: dbBook._id } }, { new: true });
-    })
-    .then(function(dbLibrary) {
-      // If the Library was updated successfully, send it back to the client
-      res.json(dbLibrary);
-    })
-    .catch(function(err) {
-      // If an error occurs, send it back to the client
-      res.json(err);
-    });
-});
+  // Start write note route
+  app.post("/notes/write", function(req, res) {
 
-  // To delete a note
-  router.delete("/notes/delete/:id", function(req, res) {
+    var sessionArticle = req.body;
 
-    console.log("res " + res);
-    console.log("req " +req.id);
-    models.Note.deleteOne(
-      {
-        _id: mongojs.ObjectId(req.params.id)
-      },
-      function(error, removed) {
+    db.Notes.create(sessionArticle.body)
+      .then(function(dbNote){
+        return db.Articles.findOneAndUpdate({
+          _id: sessionArticle.articleID.articleID
+        }, {
+          $push : {
+            note: dbNote._id
+          }
+        });
+      }).then(function(dbArticle) {
+        // If note is successfully written send it back to user
+        res.json(dbArticle);
+      }).catch(function(err) {
+        // If error occurs send to client
+        res.json(err);
+      });
+  }); // End write note route
 
-        if(error) {
-          console.log(error);
-          res.send(error);
+  // Start article note grab route
+  app.post("notes/article", function(req, res) {
+
+    db.Articles.findOne({_id: req.body.articleID}).populate("Note")
+
+      .then(function(response) {
+
+        if(response.note.length === 1) {
+
+          db.Notes.findOne({"_id": response.note}).then((function(note) {
+            note = [note];
+            console.log("Sending only note");
+            res.json(note);
+          }));
+        
+        }else {
+          db.Notes.find({
+            "_id": {
+              "$in": response.note
+            }
+          }).then(function(notes) {
+            console.log("Sending multiple notes");
+            res.json(notes);
+          });
         }
-        else {
-          console.log(removed);
-          res.send(removed);
-        }
-      }
-    );
-    
+      }).catch(function(err) {
+        res.json(err);
+      });
   });
 
-  // Clear the DB
-  router.get("/clearNotes", function(req, res) {
-    // Remove every note from the notes collection
-    models.Note.deleteMany({}, function(error, response) {
-      // Log any errors to the console
-      if (error) {
-        console.log(error);
-        res.send(error);
-      }
-      else {
-        // Otherwise, send the mongojs response to the browser
-        // This will fire off the success function of the ajax request
-        console.log(response);
-        res.send(response);
-      }
-    });
-    });
+}; // End of export
 
-  module.exports = router;
+

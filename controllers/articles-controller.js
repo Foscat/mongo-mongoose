@@ -1,150 +1,150 @@
-// Dependencies
-var express = require("express");
-var mongojs = require("mongojs");
+///////////////////////////// Setup requires \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // Require axios and cheerio. This makes the scraping possible
-var axios = require("axios");
-var cheerio = require("cheerio");
-var models = require("../models");
+var axios = require("axios"); // HTTP request
+var cheerio = require("cheerio"); // Scraper
+var mongoose = require('mongoose'); // MongoDB ORM
+var db = require("../models"); // Get all models
 
-// Initialize Express
-var app = express();
-var router = express.Router();
 
-// Database configuration
-var databaseUrl = "scraper";
-var collections = ["Articles"];
+////////////////////////////// Connect to DB \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+var mongooseConnection = mongoose.connection;
 
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) {
-  console.log("Database Error:", error);
+mongooseConnection.on("error", console.error.bind(console, "Connection error:"));
+mongooseConnection.once("open", function() {
+  console.log("Articles sucessfully connected to Mongo DB!"); // Once connection is successful it tells you in in the console log
 });
 
-// Retrieve data from the db
-router.get("/articles/saved", function(req, res) {
-  // Find all results from the scrapedData collection in the db
-  db.Articles.find({}).then(function(dbArticle){
-    res.json(dbArticle);
-  }).catch(function(err){
-    res.json(err);
-  });
-});
+module.exports = function(app) {
 
-router.post("/article/add", function(req, res) {
+  //////////////////////////////// Get Routes \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+  // Start base route
+  app.get("/", function(req, res){
+    res.render("index");
+  }); // End base route
+
+  // Start scrape data route
+  app.get("/articles/scrape", function(req, res) {
   
-  var artObj = req.body;
+    // Making a request via axios for infowars "truth". The page's HTML is passed as the callback's third argument
+    axios.get("https://www.infowars.com/").then(function(response) {
+ 
+      // Load the HTML into cheerio and save it to a variable
+      // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
+      var $ = cheerio.load(response.data);
+ 
+      // A handlebars object that holds an empty array to save the data that we'll scrape
+      var hbsObj = {
+        data: []
+      };
+ 
+      // With cheerio, find each p-tag with the "title" class
+      // (i: iterator. element: the current element)
+      $("article").each(function(i, element) {
+ 
+        var title = $(element).find(".article-content").find("h3").find("a").text();
+        // Save the text of the element in a "title" variable
+        var summary = $(element).find(".article-content").find(".entry-subtitle").text();
 
-  db.Articles.findOne(
-    {link: artObj.url}
-    ).then(function(response){
 
-      if (response === null) {
-
-        db.Articles.create(artObj)
-          .then(function(response){
-
-            console.log(" ");
-            console.log(response);
-
-          }).catch(function(err){
-            res.json(err);
-          });
-      }
-      res.send("Saved");
-    }).catch(function(err){
-      res.json(err);
-    });
-});
-
-// Scrape data from one site and place it into the mongodb db
-router.get("/scrape", function(req, res) {
-  // Make a request via axios for the news section of `ycombinator`
-  axios.get("https://news.ycombinator.com/").then(function(response) {
-    // Load the html body from axios into cheerio
-
-    // An empty array to pool data
-    var $ = cheerio.load(response.data);
-    var handleObj = {
-      data: []
-    };
-    // For each element with a "title" class
-    $(".title").each(function(i, element) {
-      // Save the text and href of each link enclosed in the current element
-      var title = $(element).children("a").text();
-      var link = $(element).children("a").attr("href");
-
-      // If this found element had both a title and a link
-      if (title && link) {
-        // Insert the data in the scrapedData db
-        db.Articles.insert({
+        var category = $(element).find(".article-content").find(".category-name").find("span").find("a").text();
+ 
+        // In the currently selected element, look at its child elements (i.e., its a-tags),
+        // then save the values for any "href" attributes that the child elements may have
+        var link = $(element).find(".article-content").find("h3").find("a").attr("href");
+ 
+        var image = $(element).find(".thumbnail").find("a").find("img").attr("src");
+        if(image === undefined){
+          image = "/images/pepe.jpg";
+        }
+ 
+        // Save these results in an object that we'll push into the results array we defined earlier
+        hbsObj.data.push({
           title: title,
-          link: link
-        },
-        function(err, inserted) {
-          if (err) {
-            // Log the error if one is encountered during the query
-            console.log(err);
-          }
-          else {
-            // Otherwise, log the inserted data
-            console.log(inserted);
-            // res.json(inserted);
-          }
-          // console.log(inserted);
-          // artInfo = {
-          //   ArticleSchema: inserted
-          // };
-          // console.log(artInfo);
-        });
-      }
-    });
-  });
-  // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
-  // res.render("index", artInfo);
-  db.Articles.find({}, function(error, found) {
-    // Throw any errors to the console
-    var hbsObj = {
-      ArticleSchema: found
-    };
-    if (error) {
-      console.log(error);
-    }
-    // If there are no errors, send the data to the browser as json
-    else {
+          summary: summary,
+          category: category,
+          link: link,
+          image: image,
+          notes: null
+          });
+      });
+ 
+      // Log the results once you've looped through each of the elements found with cheerio
       res.render("index", hbsObj);
-    }
-  });
-});
+    });
+  }); // End webscrape route
 
-  // Delete single article
-  app.post("/article/delete", (req, res) => {
-    // console.log(req.body)
-    sessObj = req.body;
 
-    db.Articles.findByIdAndRemove(sessObj["_id"]). // Look for the Article and Remove from DB
-    then(function(response) {
-      if (response) {
-        res.send("Sucessfully Deleted");
+  // Start save article route
+  app.get("/articles/saved", function(req, res) {
+    // Find all results from the scrapedData collection in the db
+    db.Articles.find({})
+      .then(function(dbArticle){
+        res.json(dbArticle);
+      })
+      .catch(function(err){
+        res.json(err);
+      });
+  }); // End save article route
+
+
+  ///////////////////////////// Post Routes \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+  // Start article post route
+  app.post("article/add", function(req, res) {
+    var artObj = req.body;
+
+    db.Articles.findOne(
+      {link: artObj.link}
+      ).then(function(response){
+  
+        if (response === null) {
+  
+          db.Articles.create(artObj)
+            .then(function(response){
+  
+              console.log(" ");
+              console.log(response);
+  
+            }).catch(function(err){
+              res.json(err);
+            });
+        }
+        res.send("Saved");
+      }).catch(function(err){
+        res.json(err);
+      });
+  }); // End article add post route
+
+  // Start article delete route
+  app.post("/article/delete", function(req, res) {
+    
+    var sessionArticle = req.body;
+
+    db.Articles.findByIdAndRemove(sessionArticle._id)
+      .then(function(response){
+        if(response){
+          res.send("Deleted");
+        }
+      });
+  }); // End delete article route
+
+  // Clear the DB
+  app.get("/clearArticles", function(req, res) {
+    // Remove every note from the notes collection
+    db.Articles.drop({}, function(error, response) {
+      // Log any errors to the console
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the mongojs response to the browser
+        // This will fire off the success function of the ajax request
+        console.log(response);
+        res.send(response);
       }
     });
-  }); // End deleteArticle Route
-
- // Clear the DB
- router.get("/clearArticles", function(req, res) {
-  // Remove every note from the notes collection
-  db.Articles.drop({}, function(error, response) {
-    // Log any errors to the console
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    else {
-      // Otherwise, send the mongojs response to the browser
-      // This will fire off the success function of the ajax request
-      console.log(response);
-      res.send(response);
-    }
   });
-});
 
-module.exports = router;
+}; //End of export
