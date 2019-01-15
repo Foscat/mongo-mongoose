@@ -53,45 +53,36 @@
 
     {{#each data}}
     
-        <div class="col" id="{{this.link}}" style="display:inline-block;">
+        <div class="col-md-5" id="{{link}}" style="display:inline-block;">
 
-            <div class="card" style="min-height:2rem; min-width:15rem;">
+            <div class="card around" style="height:fit-content; width:25rem;">
 
                 <div class="card-image" style="position:relative;">
-                    <div style="background-color: rgba(0,0,0,0.25); height: 100%; width: 100%; position:absolute; z-index:100;"></div>
-                    <img src="{{this.image}}">
-                    <span class="card-title" style="font-size:2.1vh; text-shadow: 1px white; z-index:101;">{{this.title}}</span>
+                    <img height="50%" src="{{image}}">
 
-                    <a class="addArticle btn-floating halfway-fab waves-effect waves-light red modal-trigger" style="z-index:101;" href="#modalMessage" 
-                        data-title="{{this.title}} " 
-                        data-image="{{this.image}}" 
-                        data-link="{{this.link}}" 
-                        data-summary="{{this.summary}}"
-                        data-category="{{this.category}}"
+                    <a class="addArticle btn-floating halfway-fab modal-trigger" style="z-index:101;" 
+                        href="/articles/add" 
+                        data-title="{{title}} " 
+                        data-image="{{image}}" 
+                        data-link="{{link}}" 
+                        data-summary="{{summary}}"
+                        data-category="{{category}}"
                     >
-                        <i class="material-icons">add</i>
+                        <img class="addBtn" src="/images/Button-Add-icon.png">
                     </a>
                 </div>
 
+                <span class="card-title" style="font-size:15px; color:rgb(33, 33, 82); text-shadow: 1px">{{title}}</span>
+
                 <div class="card-content">
 
-                    {{!-- <span class="card-title activator grey-text text-darken-4">
-                        {{this.slug}}<i class="material-icons right">more_vert</i>
-                    </span> --}}
+                    <p>{{summary}}</p>
 
-                    <a href="{{this.link}}"><p>See full article</p></a>
+                    <a href="{{link}}"><p>See full article</p></a>
                 
                 </div>
 
-                <div class="card-reveal" style="z-index:102;">
-
-                    <span class="card-title grey-text text-darken-4">
-                        {{this.category}}<i class="material-icons right">close</i>
-                    </span>
-
-                    <p>{{this.summary}}</p>
-            
-                </div>
+               
 
             </div>
         </div>
@@ -114,7 +105,7 @@
   </div>
  
 </div> --}}
-{{!-- End of note model --}}
+End of note model
 
 
 <!-- Model that handles individual articles -->

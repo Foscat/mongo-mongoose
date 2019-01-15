@@ -20,21 +20,9 @@ $(document).ready(function() {
           window.location.replace("/articles");
           });
     }); // End searchArticle btn Click
-
-    // //// console.log("searchArticle Button clicked");
-    // $.ajax({
-    //   url: "/articles/scrape", 
-    //   type: "GET"
-    // })
-    // .then(function(){ 
-    //   // res.render("index", hbsObj);
-    //   location.replace("/articles/scrape");
-    //   });
-
   
-    $('.addArticle').on("click", function(element) { // Save an Article Request
-  
-      // console.log("Add Button clicked");
+    // Add article to saved
+    $('.addArticle').on("click", function(element) { 
   
       var title = $(this).attr("data-title");
       var summary = $(this).attr("data-summary");
@@ -59,11 +47,11 @@ $(document).ready(function() {
         },
         body: JSON.stringify(savedArticle)
       }).then(function(response){
-        console.log(response)
+        console.log(response);
         $("#modalMessage").modal('open');
         $("#modalMessage .modal-content ").html("<h4> Sucessfully Added Article </h4>");
         setTimeout(function(){
-            $("#modalMessage").modal('close'), 1500
+            $("#modalMessage").modal(('close'), 1500);
         });
         $(document.getElementById(link)).css('display', 'none');
       });
@@ -234,7 +222,7 @@ $(document).ready(function() {
               $("#modalMessage").modal('open');
               $("#modalMessage .modal-content ").html('<h4> Sucessfully Deleted:' + sessionArticle._id + "</h4>");
                 setTimeout(function(){ 
-                  $("#modalMessage").modal('close'), 2000
+                  $("#modalMessage").modal(('close'), 2000);
                 });
               $(document.getElementById(sessionArticle._id)).css('display', 'none');
             });

@@ -2,17 +2,10 @@
 // Require axios and cheerio. This makes the scraping possible
 var axios = require("axios"); // HTTP request
 var cheerio = require("cheerio"); // Scraper
-var mongoose = require('mongoose'); // MongoDB ORM
 var db = require("../models"); // Get all models
 
 
-////////////////////////////// Connect to DB \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-var mongooseConnection = mongoose.connection;
 
-mongooseConnection.on("error", console.error.bind(console, "Connection error:"));
-mongooseConnection.once("open", function() {
-  console.log("Articles sucessfully connected to Mongo DB"); // Once connection is successful it tells you in in the console log
-});
 
 module.exports = function(app) {
 
@@ -34,56 +27,30 @@ module.exports = function(app) {
       var $ = cheerio.load(response.data);
  
       // A handlebars object that holds an empty array to save the data that we'll scrape
-      var hbsObj = {
-        data: []
-      };
+      var ScrapedArt = {};
  
       // With cheerio, find each p-tag with the "title" class
       // (i: iterator. element: the current element)
-      $("article").each(function(i, element) {
- 
+      $(".articles-wrap").each(function(i, element) {
+        var result = {};
         // Get Article title
-        var title = $(element).find(".article-content").find("h3").find("a").text();
+        result.title = $(element).find(".article-content").find("h3").find("a").text();
         // Save the text of the element in a "title" variable
-        var summary = $(element).find(".article-content").find(".entry-subtitle").text();
+        result.summary = $(element).find(".article-content").find(".entry-subtitle").text();
         // Get article category
-        var category = $(element).find(".article-content").find(".category-name").find("span").find("a").text();
+        result.category = $(element).find(".article-content").find(".category-name").find("span").find("a").text();
         // In the currently selected element, look at its child elements (i.e., its a-tags),
         // then save the values for any "href" attributes that the child elements may have
-        var link = $(element).find(".article-content").find("h3").find("a").attr("href");
+        result.link = $(element).find(".article-content").find("h3").find("a").attr("href");
         // Get a image for article. If not is there insert default image
-        var image = $(element).find(".thumbnail").find("a").find("img").attr("src");
-      
- 
-        if(title&&summary&&category&&link&&image){
-          // Save these results in an object that is pushed into the dat array defined in hbsObj
-          hbsObj.data.push({
-            title: title,
-            summary: summary,
-            category: category,
-            link: link,
-            image: image,
-            notes: null
-          }, function(err, inserted){
-            if(err){
-              console.log(err);
-            }
-            else{
-              console.log(inserted);
-            }
-          });
-        }else{
-          hbsObj.data.pop({
-            title: title,
-            summary: summary,
-            category: category,
-            link: link,
-            image: image,
-            notes: null
-          });
-        }
+        result.image = $(element).find(".thumbnail").find("a").find("img").attr("src");
+
+        ScrapedArt[i] = result;
       });
- 
+
+      var hbsObj = {
+        data: ScrapedArt
+    };
       // Log the results once looped through each of the elements found with cheerio
       res.render("index", hbsObj);
     });
@@ -181,27 +148,8 @@ module.exports = function(app) {
   app.post("/article/add", function(req, res) {
     var artObj = req.body;
 
-    console.log(artObj);
-    db.Articles.findOne(
-      {link: artObj.link}
-      ).then(function(response){
-  
-        if (response === null) {
-  
-          db.Articles.create(artObj)
-            .then(function(response){
-  
-              console.log(" ");
-              console.log(response);
-  
-            }).catch(function(err){
-              res.json(err);
-            });
-        }
-        res.send("Saved");
-      }).catch(function(err){
-        res.json(err);
-      });
+    console.log("Art Obj: ",artObj);
+    
   }); // End article add post route
 
   // Start article delete route
@@ -217,22 +165,53 @@ module.exports = function(app) {
       });
   }); // End delete article route
 
-  // Clear the DB
-  app.get("/clearArticles", function(req, res) {
-    // Remove every note from the notes collection
-    db.Articles.drop({}, function(error, response) {
-      // Log any errors to the console
-      if (error) {
-        console.log(error);
-        res.send(error);
-      }
-      else {
-        // Otherwise, send the mongojs response to the browser
-        // This will fire off the success function of the ajax request
-        console.log(response);
-        res.send(response);
-      }
+  // // Clear the DB
+  // app.get("/clearArticles", function(req, res) {
+  //   // Remove every note from the notes collection
+  //   db.Articles.deleteMany({}, function(error, response) {
+  //     // Log any errors to the console
+  //     if (error) {
+  //       console.log(error);
+  //       res.send(error);
+  //     }
+  //     else {
+  //       // Otherwise, send the mongojs response to the browser
+  //       // This will fire off the success function of the ajax request
+  //       console.log(response);
+  //       res.send(response);
+  //     }
+  //   });
+  // });
+
+    // Clear the DB
+    app.get("/clearArticles", function(req, res) {
+      // Remove every note from the notes collection
+      db.Article.deleteMany({}, function(error, response) {
+        // Log any errors to the console
+        if (error) {
+          console.log(error);
+          res.send(error);
+        }
+        else {
+          // Otherwise, send the mongojs response to the browser
+          // This will fire off the success function of the ajax request
+          console.log(response);
+          res.send(response);
+        }
+      });
+      });
+
+      // For json format of all notes
+app.get("/article/json", function(req, res) {
+  db.Article.find({}).then(function(data) {
+    console.log(data);
+      var hbsObj = {
+        NoteSchema: data
+      };
+      console.log(hbsObj);
+      // wrapper for orm.js that using MySQL query callback will return burger_data, render to index with handlebar
+      res.json(hbsObj);
     });
-  });
+});
 
 }; //End of export

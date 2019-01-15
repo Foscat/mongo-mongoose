@@ -47,6 +47,19 @@ body {
   background-color: darkgray;
 }
 
+/* Styling for scraped articles */
+.card-title {
+  font-size: 6px; 
+  color:blue;
+  background-color: darkgray;
+   text-shadow: 1px white; z-index:101;
+}
+.addBtn{
+  height: 25px;
+  width: 25px;
+  position: ab;
+}
+
 /*  ///// Id modifiers ///// */
 
 /* This section sets container sizes and framework of each  */
