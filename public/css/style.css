@@ -60,7 +60,7 @@ body {
   padding-top: 2%;
 }
 
-/* Container that seperates scraped article information from reast of page  */
+/* Container that seperates scraped article information from rest of page  */
 #article {
   display: inline-block;
   overflow: auto;
