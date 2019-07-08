@@ -1,50 +1,42 @@
+// Web Scraper Homework Solution Example
+// (be sure to watch the video to see
+// how to operate the site in the browser)
+// -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+
+// Require our dependencies
 var express = require("express");
+var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
-var bodyParser = require('body-parser'); // Post Body Request
-var logger = require("morgan");
-var mongoose = require('mongoose'); // MongoDB ORM
-var modals = require("./models");
-var request = require('request');
-var cheerio = require('cheerio');
-var path = require("path");
 
+// Set up our port to be either the host's designated port, or 3000
+var PORT = process.env.PORT || 3000;
 
-
-// Require all models
-
-var PORT = process.env.Port || 3000;
-
-// Initialize Express
+// Instantiate our Express App
 var app = express();
-// Use morgan logger for logging requests
-app.use(logger("dev"));
+
+// Require our routes
+var routes = require("./routes");
 
 // Parse request body as JSON
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// Make public a static folder
+app.use(express.static("public"));
 
-// Set Handlebars as templating engine.
+// Connect Handlebars to our Express app
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-// Make public a static folder
-app.use(express.static(path.join('./public')));
+// Have every request go through our route middleware
+app.use(routes);
 
-// Import routes and give the server access to them.
-require("./controllers/app-controller")(app);
-// require("./controllers/notes-controller")(app);
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-////////////////////////////// Connect to DB \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-var mongooseConnection = mongoose.connection;
+// Connect to the Mongo DB
+mongoose.connect(MONGODB_URI);
 
-mongooseConnection.on("error", console.error.bind(console, "Connection error:"));
-mongooseConnection.once("open", function() {
-  console.log("Articles sucessfully connected to Mongo DB"); // Once connection is successful it tells you in in the console log
-});
-
-
-// Start our server so that it can begin listening to client requests.
+// Listen on the port
 app.listen(PORT, function() {
-    // Log (server-side) when our server has started
-    console.log("Server listening on: http://localhost:" + PORT);
-  });
+  console.log("Listening on port: " + PORT);
+});
